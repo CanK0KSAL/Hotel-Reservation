@@ -1,335 +1,123 @@
-# Hotel / Room Reservation System
+# Hotel Reservation System
 
-A step-by-step Java project built to learn object-oriented programming, layered structure, business rules, and application evolution from a simple console program into a real software product.
+A Java 17 console application for managing hotel room reservations. Built with object-oriented design, in-memory repositories, and a dedicated service layer for reservation business rules.
 
-This project does **not** try to jump straight into fancy frameworks or UI.  
-The goal is to build the core logic properly first, then grow it version by version.
+## Features
 
----
+- View a catalog of five preconfigured hotel rooms
+- Create reservations with guest details and check-in/check-out dates
+- Prevent overlapping reservations for the same room
+- Calculate total reservation prices
+- List existing reservations
+- Cancel eligible reservations
+- Validate user input and reservation constraints
 
-## Project Goal
+## Tech Stack
 
-The main purpose of this project is to learn Java in a practical way by building a reservation system from scratch.
+- Java 17
+- Gradle
+- JUnit 5
+- Java standard library (`LocalDate`, `Scanner`, collections)
 
-Instead of starting with web frameworks, databases, or complex UI, the project begins with a clean console-based version and grows over time into a more complete application.
+## Architecture
 
-This way, each version teaches something different:
-
-- **v1** → core Java and object-oriented thinking
-- **v2** → stronger business rules and data persistence
-- **v3** → desktop application structure
-- **v4** → web application architecture
-- **v5** → portfolio-level polished product
-
----
-
-## Current Version
-
-## v1 — Console Core
-
-The current version is a **console-based hotel room reservation system**.
-
-At this stage, the project focuses on the core reservation logic and basic architecture.
-
-### Features in v1
-
-- List available rooms
-- Create a reservation
-- Cancel a reservation
-- View all reservations
-- Validate guest input
-- Validate dates
-- Prevent reservation date overlaps
-- Calculate total price based on room price and number of nights
-
----
-
-## Why This Project Starts Small
-
-A lot of beginner projects become messy very quickly because they try to do too much at once.
-
-This project intentionally starts with:
-
-- no database
-- no login system
-- no GUI
-- no web framework
-- no unnecessary complexity
-
-The idea is simple:  
-first make the system **work correctly**, then make it **better**, then make it **bigger**.
-
----
-
-## What v1 Teaches
-
-This version is mainly about understanding the logic behind a real application.
-
-### Java concepts used in v1
-
-- classes and objects
-- constructors
-- enums
-- encapsulation
-- object relationships
-- lists
-- basic exception handling
-- `LocalDate`
-- `Scanner`
-- layered project structure
-
-### Software design concepts used in v1
-
-- separation of concerns
-- basic layered architecture
-- business logic vs user interface
-- repository pattern (in-memory for now)
-- domain modeling
-
----
-
-## Project Structure (v1)
+The application separates console interaction, business logic, persistence abstractions, and domain models.
 
 ```text
-src/main/java/com/canbey/reservation
-├── Main.java
-├── console
-│   └── Menu.java
-├── model
-│   ├── Room.java
-│   ├── Reservation.java
-│   └── enums
-│       ├── RoomType.java
-│       └── ReservationStatus.java
-├── repository
-│   ├── RoomRepository.java
-│   └── ReservationRepository.java
-└── service
-    └── ReservationService.java
-Package Explanation
-model
+src/
+  main/java/com/canbey/reservation/
+    Main.java
+    console/
+      Menu.java
+    model/
+      Room.java
+      Reservation.java
+      enums/
+        RoomType.java
+        ReservationStatus.java
+    repository/
+      RoomRepository.java
+      ReservationRepository.java
+    service/
+      ReservationService.java
+  test/java/com/canbey/reservation/
+    repository/
+      RoomRepositoryTest.java
+      ReservationRepositoryTest.java
+    service/
+      ReservationServiceTest.java
+```
 
-Contains the core objects of the system.
+**Main / Menu:** Application entry point and interactive console interface.
 
-Examples:
+**ReservationService:** Reservation validation, availability checking, price calculation, and cancellation rules.
 
-Room
-Reservation
+**Repositories:** In-memory storage and lookup for rooms and reservations.
 
-These classes represent the actual data used by the application.
+**Models:** Room and reservation domain objects, types, and statuses.
 
-model.enums
+## Reservation Business Rules
 
-Contains controlled value sets used in the system.
+- Guest name and phone number cannot be empty.
+- Check-in cannot be in the past.
+- Check-out must be later than check-in.
+- Rooms must exist and be active to accept reservations.
+- Active reservations for the same room cannot overlap.
+- Adjacent date ranges are allowed.
+- Total price equals the number of nights multiplied by the room's nightly rate.
+- Cancelled reservations no longer block their original dates.
+- A reservation cannot be cancelled on or after its check-in date.
+- Already cancelled reservations cannot be cancelled again.
 
-Examples:
+## Getting Started
 
-RoomType
-ReservationStatus
+### Requirements
 
-Enums are used to avoid random string values and keep the system consistent.
+- JDK 17
+- Internet access for initial Gradle dependency resolution
 
-repository
+### Run the application
 
-Responsible for storing and retrieving data.
+Windows PowerShell:
 
-In v1, repositories work in memory, which means data is kept in lists while the program is running.
+```powershell
+.\gradlew.bat run
+```
 
-Examples:
+Linux/macOS:
 
-RoomRepository
-ReservationRepository
-service
+```bash
+./gradlew run
+```
 
-Contains the business rules of the application.
+Follow the interactive menu to list rooms, create reservations, view reservations, or cancel an existing reservation.
 
-This is where the actual logic lives, such as:
+## Testing
 
-checking whether a room exists
-validating dates
-calculating total price
-checking date conflicts
-cancelling reservations
+The project includes 28 JUnit 5 automated tests covering reservation rules, pricing, date validation, overlaps, cancellations, and repository behavior.
 
-Example:
+Windows:
 
-ReservationService
-console
+```powershell
+.\gradlew.bat clean test
+.\gradlew.bat build
+```
 
-Handles user interaction through the terminal.
+Linux/macOS:
 
-This package is responsible for:
+```bash
+./gradlew clean test
+./gradlew build
+```
 
-printing menus
-reading user input
-calling the service layer
+The latest local verification passed all 28 tests and completed the Gradle build successfully.
 
-Example:
+## Current Limitations
 
-Menu
-Main
+- Data is stored in memory and is lost when the application exits.
+- The room catalog is predefined.
+- There is no database, authentication, or graphical interface.
+- The application is designed for single-user console interaction.
+- Room availability is checked when creating a reservation rather than through a separate date-range search.
 
-The entry point of the application.
-
-It simply starts the program and hands control to the menu.
-
-Main Business Rules in v1
-
-The current version includes a few important rules:
-
-check-in date cannot be in the past
-check-out date must be after check-in date
-a room must exist before it can be reserved
-inactive rooms cannot be reserved
-overlapping reservations are not allowed
-already cancelled reservations cannot be cancelled again
-reservations that already started cannot be cancelled
-
-These rules matter because they make the project feel like an actual system instead of a menu demo.
-
-Example Flow
-
-A user can:
-
-open the system
-list rooms
-choose a room
-enter guest information
-select check-in and check-out dates
-create a reservation
-view reservation details
-cancel a reservation if allowed
-Technologies Used in v1
-Java 17
-Gradle
-IntelliJ IDEA
-standard Java libraries (Scanner, LocalDate, List, etc.)
-
-No external frameworks are used in v1 on purpose.
-
-How to Run
-Open the project in IntelliJ IDEA
-Make sure Gradle is loaded
-Run Main.java
-
-If IntelliJ runs the program in a way that does not allow terminal input properly, switch Gradle run settings to IntelliJ run mode.
-
-Version Roadmap
-
-The long-term goal is to evolve this project instead of throwing it away after v1.
-
-Each new version adds a real layer of complexity.
-
-v2 — Stronger Console Version
-
-Planned improvements:
-
-file-based persistence
-reservation history
-search reservations by guest name
-filter rooms by type
-list only available rooms
-improved validation
-better formatting and cleaner console UX
-stronger separation between layers
-more maintainable code structure
-Main focus of v2
-
-Make the console version feel like a proper small application instead of a prototype.
-
-v3 — Desktop Application
-
-Planned direction:
-
-JavaFX-based desktop interface
-room list screen
-reservation form
-reservation history screen
-basic navigation between screens
-better user experience than raw terminal input
-Main focus of v3
-
-Learn how core logic connects to a real user interface without changing the business layer completely.
-
-v4 — Web Application
-
-Planned direction:
-
-Spring Boot backend
-web interface
-database integration
-room and reservation management through browser
-admin-oriented operations
-real persistence layer
-cleaner controller/service/repository separation
-Main focus of v4
-
-Move from local application thinking to web application architecture.
-
-v5 — Polished Portfolio Version
-
-Planned improvements:
-
-authentication and authorization
-admin dashboard
-statistics and reports
-search, filter, and sorting improvements
-production-ready database structure
-exception handling improvements
-testing
-cleaner deployment setup
-improved UI/UX
-project documentation upgrades
-Main focus of v5
-
-Turn the project into something that looks and feels portfolio-ready.
-
-Why the Versioned Approach Matters
-
-This project is intentionally designed as an evolving system.
-
-Instead of creating five separate unrelated projects, the goal is to show growth through versions:
-
-first the logic
-then the rules
-then the interface
-then the architecture
-then the polish
-
-This is much closer to how real software evolves.
-
-What I Wanted to Learn with This Project
-
-This project is part of a bigger learning process.
-
-The point is not only to “finish a hotel app.”
-The point is to understand:
-
-how to model a system
-how to separate responsibilities
-how to write business rules
-how to grow a project without turning it into spaghetti code
-how to move from simple Java into larger application development
-Current Limitations of v1
-
-Since this is the first version, some things are intentionally missing:
-
-no database
-no user accounts
-no authentication
-no file persistence
-no GUI
-no web support
-no test suite yet
-
-These are not forgotten.
-They are simply postponed to the correct stage.
-
-Future Related Project
-
-This project is being developed alongside another learning project:
-
-Personal Budget / Expense Tracker
-
-That project will follow a similar versioned structure, but in a different domain.
-The goal is to reinforce the same Java and architecture skills through another real use case.
+This is an educational Java project focused on object-oriented design and reservation business logic.

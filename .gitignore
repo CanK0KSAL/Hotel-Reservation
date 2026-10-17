@@ -40,3 +40,5 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+# IntelliJ IDEA local settings
+.idea/

@@ -1,4 +1,7 @@
 package com.canbey.reservation.model.enums;
 
-public class RoomType {
+public enum RoomType {
+    SINGLE,
+    DOUBLE,
+    SUITE
 }
